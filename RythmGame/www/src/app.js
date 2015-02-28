@@ -86,8 +86,14 @@ var HelloWorldLayer = cc.Layer.extend({
             prevTouchId: -1,
             event: cc.EventListener.TOUCH_ALL_AT_ONCE,
             onTouchesEnded: function (touches, event) {
+                //Touch ends
+                 for(var touch in touches){
+                    event.getCurrentTarget().processEndEvent(touches[0]);
+                  }
+            },
+            onTouchesBegan:function(touches, event){
                 //New added in to make it so you can check multiple clicks at the same time.   
-                for(touch in touches){
+                for(var touch in touches){
                     event.getCurrentTarget().processEvent(touches[0]);
                   }
             }
@@ -101,14 +107,23 @@ var HelloWorldLayer = cc.Layer.extend({
         //Check Left
         if(this.LeftBox.checkDidTouch(event.getLocation())){
             this.leftScore += 1;
+            this.leftCheckLabel.setString("x" + this.leftScore + " begin", "Arial", 38);
         //Check Right
         }else if(this.RightBox.checkDidTouch(event.getLocation())){
             this.rightScore += 1;
+            this.rightCheckLabel.setString("x" + this.rightScore + " begin" , "Arial", 38);
         }
-        this.leftCheckLabel.setString("x" + this.leftScore, "Arial", 38);
-        this.rightCheckLabel.setString("x" + this.rightScore, "Arial", 38);
-    }
+    },
     
+    //Checking for end touches
+    processEndEvent: function(event) {
+        if(this.LeftBox.checkDidTouch(event.getLocation())){
+            this.leftCheckLabel.setString("x" + this.leftScore + " end", "Arial", 38);
+        }
+        else if(this.RightBox.checkDidTouch(event.getLocation())){
+            this.rightCheckLabel.setString("x" + this.rightScore + " end", "Arial", 38);
+        }
+    }
     
 });
 
