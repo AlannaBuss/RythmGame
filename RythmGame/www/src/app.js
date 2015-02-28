@@ -42,8 +42,6 @@ var HelloWorldLayer = cc.Layer.extend({
         // create and initialize a label
         var songLabel = new SongTitle();
         // position the label on the center of the screen
-        songLabel.x = size.width / 2;
-        songLabel.y = 0;
         // add the label as a child to this layer
         this.addChild(songLabel, 5);
 
@@ -55,18 +53,9 @@ var HelloWorldLayer = cc.Layer.extend({
         this.RightBox = new Right();
         this.addChild(this.RightBox, 0);
 
-        // this.sprite.runAction(
-        //    cc.sequence(
-        //    cc.rotateTo(2, 0),
-        //        cc.scaleTo(2, 1, 1)
-        //    )
-        //);
-        songLabel.runAction(
-            cc.spawn(
-                cc.moveBy(2.5, cc.p(0, size.height - 40)),
-                cc.tintTo(2.5,255,125,0)
-            )
-        );
+        songLabel.moveToTop();
+        
+        
         this.song = new Song({url:asset.Oroborous_ogg, bpm:130});
         this.song.play();
         //1 second * (130/60 seconds/beat
@@ -141,8 +130,27 @@ var HelloWorldScene = cc.Scene.extend({
 });
 
 var SongTitle = cc.LabelTTF.extend({
-    ctor: function(parent, alignment) {
+    ctor:function(parent, alignment) {
         this._super("Ouroboros", "Arial", 38);
+        this.x = cc.winSize.width / 2;
+        this.y = 0;
+    },
+    
+    moveToTop:function(){
+        var movement = 
+            cc.spawn(
+                cc.moveBy(2.5, cc.p(0, cc.winSize.height - 40)),
+                cc.tintTo(2.5,255,125,0)
+                
+            );
+        this.runAction(movement);
+        this.scheduleOnce(this.hide,movement.getDuration());
+        
+    },
+    
+    hide:function()
+    {
+        this.setVisible(false);
     }
 });
 
