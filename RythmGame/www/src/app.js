@@ -157,17 +157,25 @@ var HelloWorldLayer = cc.Layer.extend({
             this.combo = 0;
         }
         this.comboLabel.updateScore(this.combo);
+        this.score += this.scoreLabel.morePoints(status);
     },
     
     //Checking for end touches
     processEndEvent: function(event) {
+        var status = 0;
         if(this.LeftBox.checkDidTouch(event.getLocation())){
-            this.leftCheckLabel.processAction(3);
+            status = 3;
+            this.leftCheckLabel.processAction(status);
             console.log("L " + this.leftStartHold + " " + this.currentBeat);
         }
         else if(this.RightBox.checkDidTouch(event.getLocation())){
-            this.rightCheckLabel.processAction(3);
+            status = 3;
+            this.rightCheckLabel.processAction(status);
             console.log("R " + this.rightStartHold + " " + this.currentBeat);
+        }
+        this.score += this.scoreLabel.morePoints(status);
+        if(status === 0){
+            this.combo = 0;
         }
         this.scoreLabel.updateScore(this.score);
     }
@@ -191,6 +199,17 @@ var ScoreLabel = cc.LabelTTF.extend({
     
     updateScore:function(score){
         this.setString("" + score);
+    },
+    
+    morePoints: function(score){
+        if(score === 0){
+            return 0;
+        }else if (score == 1){
+            return 15;
+        }else{
+            return 20;
+        }
+        
     }
 });
 
@@ -228,11 +247,10 @@ var LeftUpdate = cc.LabelTTF.extend({
             );
         this.runAction(colorChange);
         this.show();
-        this.move();
+        this.scheduleOnce(this.move, colorChange.getDuration());
         
     },
     move:function(){
-       this.cleanup();
         var movement = 
             cc.spawn(
                 cc.moveBy(0.5, cc.p(0, 40)),
@@ -274,14 +292,10 @@ var RightUpdate = cc.LabelTTF.extend({
             );
         this.runAction(colorChange);
         this.show();
-        //this.scheduleOnce(this.move, colorChange.getDuration());
-        this.move();
+        this.scheduleOnce(this.move, colorChange.getDuration());
         
     },
     move:function(){
-        //Take this out V
-        this.cleanup();
-        
         var movement = 
             cc.spawn(
                 cc.moveBy(0.5, cc.p(0, 40)),
