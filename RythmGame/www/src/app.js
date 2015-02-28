@@ -4,8 +4,8 @@ var HelloWorldLayer = cc.Layer.extend({
     RightBox: null,
     leftCheckLabel:null,
     rightCheckLabel:null,
-    leftScore:0,
-    rightScore:0,
+    scoreLabel:null,
+    score:0,
     ctor:function () {
         //////////////////////////////
         // 1. super init first
@@ -63,16 +63,17 @@ var HelloWorldLayer = cc.Layer.extend({
         
         
         //Label for the left side
-        this.leftCheckLabel = new cc.LabelTTF("x0" , "Arial", 38);
-        this.leftCheckLabel.x = size.width / 4;
-        this.leftCheckLabel.y = size.height / 2;
+        this.leftCheckLabel = new LeftUpdate();
         this.addChild(this.leftCheckLabel, 5);
         
         //Label for the right side
-        this.rightCheckLabel = new cc.LabelTTF("x0" , "Arial", 38);
-        this.rightCheckLabel.x = 3 * size.width / 4;
-        this.rightCheckLabel.y = size.height / 2;
+        this.rightCheckLabel = new RightUpdate();
         this.addChild(this.rightCheckLabel, 5);
+        
+        //Score Label
+        this.scoreLabel = new ScoreLabel();
+        this.addChild(this.scoreLabel, 5);
+        
         
         //Checks for "touches" copied from HYPERLOOP
         if (cc.sys.capabilities.hasOwnProperty('touches')) {
@@ -88,7 +89,7 @@ var HelloWorldLayer = cc.Layer.extend({
             onTouchesBegan:function(touches, event){
                 //New added in to make it so you can check multiple clicks at the same time.   
                 for(var touch in touches){
-                    event.getCurrentTarget().processEvent(touches[0]);
+                    event.getCurrentTarget().processBeginEvent(touches[0]);
                   }
             }
             }, this);
@@ -97,26 +98,25 @@ var HelloWorldLayer = cc.Layer.extend({
     },
     
     //Checking for touches
-    processEvent: function(event) {
+    processBeginEvent: function(event) {
         //Check Left
         if(this.LeftBox.checkDidTouch(event.getLocation())){
-            this.leftScore += 1;
-            this.leftCheckLabel.setString("x" + this.leftScore + " begin", "Arial", 38);
+            this.leftCheckLabel.processAction(3);
         //Check Right
         }else if(this.RightBox.checkDidTouch(event.getLocation())){
-            this.rightScore += 1;
-            this.rightCheckLabel.setString("x" + this.rightScore + " begin" , "Arial", 38);
+            this.rightCheckLabel.processAction(3);
         }
     },
     
     //Checking for end touches
     processEndEvent: function(event) {
         if(this.LeftBox.checkDidTouch(event.getLocation())){
-            this.leftCheckLabel.setString("x" + this.leftScore + " end", "Arial", 38);
+            this.leftCheckLabel.processAction(3);
         }
         else if(this.RightBox.checkDidTouch(event.getLocation())){
-            this.rightCheckLabel.setString("x" + this.rightScore + " end", "Arial", 38);
+            this.rightCheckLabel.processAction(3);
         }
+        this.scoreLabel.updateScore(this.score);
     }
     
 });
@@ -129,8 +129,112 @@ var HelloWorldScene = cc.Scene.extend({
     }
 });
 
+var ScoreLabel = cc.LabelTTF.extend({
+    ctor:function(){
+        this._super("0", "Arial", 25);
+        this.x = cc.winSize.width / 2;
+        this.y = cc.winSize.height - 40;
+    },
+    
+    updateScore:function(score){
+        this.setString("" + score);
+    }
+});
+
+var LeftUpdate = cc.LabelTTF.extend({
+    ctor:function(){
+        this._super("", "Arial", 38);
+        this.x = 3 * cc.winSize.width / 4;
+        this.y = cc.winSize.height / 2;
+    },
+    processAction:function(number){
+        this.x = cc.winSize.width / 4;
+        this.y = cc.winSize.height / 2;
+        if(number === 0){
+            this.setString("Miss");
+        }else if(number == 1){
+            this.setString("Good");
+        }else{
+            this.setString("Perfect");
+        }
+         var colorChange = 
+            cc.spawn(
+                cc.tintTo(0, 255, 255, 255)
+            );
+        this.runAction(colorChange);
+        this.show();
+        this.scheduleOnce(this.move, colorChange.getDuration());
+        
+    },
+    move:function(){
+       
+        var movement = 
+            cc.spawn(
+                cc.moveBy(0.5, cc.p(0, 40)),
+                cc.tintTo(0.5, 0, 0, 0)
+            );
+        this.runAction(movement);
+        this.scheduleOnce(this.hide, movement.getDuration());
+    },
+    
+    hide:function()
+    {
+        this.setVisible(false);
+    },
+    show:function(){
+        this.setVisible(true);
+    }
+
+});
+
+var RightUpdate = cc.LabelTTF.extend({
+    ctor:function(){
+        this._super("", "Arial", 38);
+        this.x = 3 * cc.winSize.width / 4;
+        this.y = cc.winSize.height / 2;
+    },
+    processAction:function(number){
+        this.x = 3 * cc.winSize.width / 4;
+        this.y = cc.winSize.height / 2;
+        if(number === 0){
+            this.setString("Miss");
+        }else if(number == 1){
+            this.setString("Good");
+        }else{
+            this.setString("Perfect");
+        }
+         var colorChange = 
+            cc.spawn(
+                cc.tintTo(0, 255, 255, 255)
+            );
+        this.runAction(colorChange);
+        this.show();
+        this.scheduleOnce(this.move, colorChange.getDuration());
+        
+    },
+    move:function(){
+       
+        var movement = 
+            cc.spawn(
+                cc.moveBy(0.5, cc.p(0, 40)),
+                cc.tintTo(0.5, 0, 0, 0)
+            );
+        this.runAction(movement);
+        this.scheduleOnce(this.hide, movement.getDuration());
+    },
+    
+    hide:function()
+    {
+        this.setVisible(false);
+    },
+    show:function(){
+        this.setVisible(true);
+    }
+
+});
+
 var SongTitle = cc.LabelTTF.extend({
-    ctor:function(parent, alignment) {
+    ctor:function() {
         this._super("Ouroboros", "Arial", 38);
         this.x = cc.winSize.width / 2;
         this.y = 0;
