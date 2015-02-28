@@ -2,6 +2,7 @@ var SongBuffer = function()
 {
     this.lBuffer = [];
     this.rBuffer = [];
+    this.isRightSide = false;
    
     this.parse=function(err,txt)
     {
@@ -21,7 +22,7 @@ var SongBuffer = function()
                 console.log(token);
                 if(token[0] == 'R')
                 {
-                    this.rBuffer.push({down:parseFloat(token[1]),up:parseFloat(token[2])});
+                    this.rBuffer.push({down:parseFloat(token[1]),up:parseFloat(token[2])});             this.isRightSide = true;
                 }
                 else if(token[0]=='L')
                 {

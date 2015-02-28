@@ -10,6 +10,7 @@ var HelloWorldLayer = cc.Layer.extend({
     rightScore:0,
     beats:[],
     bpm:130,
+    barSprite:null,
     ctor:function () {
         //////////////////////////////
         // 1. super init first
@@ -106,9 +107,9 @@ var HelloWorldLayer = cc.Layer.extend({
             }
             }, this);
         }
-        var barSprite = new cc.Sprite(asset.Bar_png);
-        barSprite.attr({x:cc.winSize/2,y:cc.winSize/6});
-        this.addChild(barSprite,-1);
+        this.barSprite = new cc.Sprite(asset.Bar_png);
+        this.barSprite.attr({x:cc.winSize.width/2,  y:cc.winSize.height/6});
+        this.addChild(this.barSprite);
         this.scheduleUpdate();
         
         
@@ -120,14 +121,9 @@ var HelloWorldLayer = cc.Layer.extend({
         
         for(var aBeat in this.beats)
         {
-            if(this.beats[aBeat].updateBeat(dt*(130/60)))
-            {
-                this.beats[aBeat].unscheduleUpdate();
-            }
-            else if(this.beats[aBeat]._addedToScene)
-            {
-                this.beats[aBeat].scheduleUpdate();
-            }
+            
+            
+            (this.beats[aBeat].updateBeat(dt*(130/60)))
         }
             
     },

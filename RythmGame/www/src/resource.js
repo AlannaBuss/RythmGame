@@ -4,7 +4,7 @@ var asset = {
     Circle_png : "asset/circleSprite.png",
     CloseSelected_png : "asset/CloseSelected.png",
     White_png :"asset/White.png",
-    Bar_png : "asset/Bar.png",
+    Bar_png : "asset/bar.png",
     Oroborous_ogg :"asset/Ouroboros.mp3"
   
 };

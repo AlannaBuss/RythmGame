@@ -1,6 +1,6 @@
 #R: Right side
 #L: Left side
-#Note data points are in eights
+#Note data points are in beats
 R 1 1
 L 4 4
 R 5 5
