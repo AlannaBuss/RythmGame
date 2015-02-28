@@ -13,7 +13,7 @@ var HelloWorldLayer = cc.Layer.extend({
     bpm:130,
     barSprite:null,
     combo:0,
-    currentBeat:0;
+    currentBeat:0,
     ctor:function () {
         //////////////////////////////
         // 1. super init first
@@ -123,13 +123,13 @@ var HelloWorldLayer = cc.Layer.extend({
     
     update:function(dt)
     {
-        currentBeat += dt*this.bpm/60.0;
+        this.currentBeat += dt*this.bpm/60.0;
         
         for(var aBeat in this.beats)
         {
             
             
-            (this.beats[aBeat].updateBeat(dt*(130/60)))
+            (this.beats[aBeat].updateBeat(dt*(130/60)));
         }
             
     },
