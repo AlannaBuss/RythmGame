@@ -26,7 +26,7 @@ var SongBuffer = function()
                 }
                 else if(token[0]=='L')
                 {
-                    this.lBuffer.push({down:parseFloat(token[1]),up:parseFloat([2]), isRightSide:false});
+                    this.lBuffer.push({down:parseFloat(token[1]),up:parseFloat(token[2]), isRightSide:false});
                 }
                 
             }
