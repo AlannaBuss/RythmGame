@@ -5,6 +5,8 @@ var asset = {
     CloseSelected_png : "asset/CloseSelected.png",
     White_png :"asset/White.png",
     Bar_png : "asset/bar.png",
+    White_empty: "asset/WhiteEmpty.png",
+    White_full: "asset/WhiteFull.png",
     Oroborous_ogg :"asset/Ouroboros.mp3"
   
 };

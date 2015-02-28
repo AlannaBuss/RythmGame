@@ -7,6 +7,8 @@ var TapNode = cc.Sprite.extend({
     _beatTick:0,
     _tappedDown:false,
     _tappedUp:false,
+    _isHold:false,
+    _progressNode:null,
     ctor:function(noteInfo, parentLayer)
     {
         this._super(asset.White_png);
@@ -16,6 +18,18 @@ var TapNode = cc.Sprite.extend({
         });        
         this.downBeat = noteInfo.down;
         this.upBeat = noteInfo.up;
+        if(this.upBeat - this.downBeat > 1/32.0)
+        {
+            _isHold = true;
+            this.addChild(new cc.Sprite(asset.White_empty),-2);
+            this._progressNode = new cc.ProgressTimer();
+            this._progressNode = new cc.sprite(asset.White_full);
+            this._progressNode.type == cc.ProgressTimer.TYPE_RADIAL;
+            this.addChild(this._progressNode,-1);
+            
+            
+            
+        }
         this._parentLayer = parentLayer;
     },
     updateBeat:function(dBeat)
@@ -35,6 +49,11 @@ var TapNode = cc.Sprite.extend({
             {
                 
                 this.y = (cc.winSize.height  * (this.downBeat - this._beatTick) + cc.winSize.height/6);
+            }
+            else if(this._isHold)
+            {
+                var percent = (this._beatTick - this.downBeat) / (this.upBeat - this.downBeat);
+                this._progressNode.setPercentage(percent);
             }
             if(this.y < -cc.winSize.height)
             {
