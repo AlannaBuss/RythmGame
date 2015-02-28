@@ -2,7 +2,6 @@ var SongBuffer = function()
 {
     this.lBuffer = [];
     this.rBuffer = [];
-    this.isRightSide = false;
    
     this.parse=function(err,txt)
     {
@@ -17,16 +16,17 @@ var SongBuffer = function()
             console.log(dat);
             for(var line in dat)
             {
-                console.log('yee ' + dat[line]);
+                //console.log('yee ' + dat[line]);
                 var token = dat[line].split(' ');
-                console.log(token);
+                console.log(token[0]);
                 if(token[0] == 'R')
                 {
-                    this.rBuffer.push({down:parseFloat(token[1]),up:parseFloat(token[2])});             this.isRightSide = true;
+                    
+                    this.rBuffer.push({down:parseFloat(token[1]),up:parseFloat(token[2]), isRightSide:true});             
                 }
                 else if(token[0]=='L')
                 {
-                    this.lBuffer.push({down:parseFloat(token[1]),up:parseFloat([2])});
+                    this.lBuffer.push({down:parseFloat(token[1]),up:parseFloat([2]), isRightSide:false});
                 }
                 
             }

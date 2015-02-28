@@ -14,6 +14,8 @@ var HelloWorldLayer = cc.Layer.extend({
     barSprite:null,
     combo:0,
     currentBeat:0,
+    leftStartHold:0,
+    rightStartHold:0,
     ctor:function () {
         //////////////////////////////
         // 1. super init first
@@ -70,7 +72,7 @@ var HelloWorldLayer = cc.Layer.extend({
         //Load beats
       
         console.log(g_songs[0]);
-        var buf = g_songs[0].lBuffer;
+        var buf = g_songs[0].lBuffer.concat(g_songs[0].rBuffer);
         
         for(var beat in buf)
         {
@@ -140,11 +142,14 @@ var HelloWorldLayer = cc.Layer.extend({
         if(this.LeftBox.checkDidTouch(event.getLocation())){
             status = 3;
             this.leftCheckLabel.processAction(status);
+            this.leftStartHold = this.currentBeat;
         //Check Right
         }else if(this.RightBox.checkDidTouch(event.getLocation())){
             status = 3;
             this.rightCheckLabel.processAction(status);
+            this.rightStartHold = this.currentBeat;
         }
+        
         //Combo stuff
         if(status>0){
             this.combo++;
@@ -158,9 +163,11 @@ var HelloWorldLayer = cc.Layer.extend({
     processEndEvent: function(event) {
         if(this.LeftBox.checkDidTouch(event.getLocation())){
             this.leftCheckLabel.processAction(3);
+            console.log("L " + this.leftStartHold + " " + this.currentBeat);
         }
         else if(this.RightBox.checkDidTouch(event.getLocation())){
             this.rightCheckLabel.processAction(3);
+            console.log("R " + this.rightStartHold + " " + this.currentBeat);
         }
         this.scoreLabel.updateScore(this.score);
     }
@@ -221,11 +228,11 @@ var LeftUpdate = cc.LabelTTF.extend({
             );
         this.runAction(colorChange);
         this.show();
-        this.scheduleOnce(this.move, colorChange.getDuration());
+        this.move();
         
     },
     move:function(){
-       
+       this.cleanup();
         var movement = 
             cc.spawn(
                 cc.moveBy(0.5, cc.p(0, 40)),
@@ -267,11 +274,14 @@ var RightUpdate = cc.LabelTTF.extend({
             );
         this.runAction(colorChange);
         this.show();
-        this.scheduleOnce(this.move, colorChange.getDuration());
+        //this.scheduleOnce(this.move, colorChange.getDuration());
+        this.move();
         
     },
     move:function(){
-       
+        //Take this out V
+        this.cleanup();
+        
         var movement = 
             cc.spawn(
                 cc.moveBy(0.5, cc.p(0, 40)),
