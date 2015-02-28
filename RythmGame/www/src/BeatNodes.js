@@ -34,9 +34,9 @@ var TapNode = cc.Sprite.extend({
         }
         this._parentLayer = parentLayer;
     },
-    updateBeat:function(dBeat)
+    updateBeat:function(beatTick)
     {
-        this._beatTick += dBeat;
+        this._beatTick = beatTick;
         if(this._beatTick + 1 > this.downBeat && !this._addedToScene)
         {
             
