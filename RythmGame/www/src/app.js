@@ -67,7 +67,12 @@ var HelloWorldLayer = cc.Layer.extend({
                 cc.tintTo(2.5,255,125,0)
             )
         );
-               
+        this.song = new Song({url:asset.Oroborous_ogg, bpm:130});
+        this.song.play();
+        //1 second * (130/60 seconds/beat
+        //this.schedule(this.logBeat, 1*(130.0/(60.0*8)));
+        
+        
         //Label for the left side
         this.leftCheckLabel = new cc.LabelTTF("x0" , "Arial", 38);
         this.leftCheckLabel.x = size.width / 4;
@@ -160,3 +165,34 @@ var Left = cc.Sprite.extend({
         return false;
     }
 });
+
+var Song = function(info){
+    console.log(cc.audioEngine);
+    this.songInfo = info;
+    console.log(this.songInfo);
+    cc.audioEngine.playMusic(info.url);
+    cc.audioEngine.pauseMusic();
+
+    this.songTime = function()
+    {
+        return cc.audioEngine._currMusic._context.currentTime;    
+    };
+    this.beat = function()
+    {
+        
+        return this.songTime()/(this.songInfo.bpm/60.0);
+    };
+    this.play = function()
+    {
+        return cc.audioEngine.resumeMusic();
+    };
+    this.maxBeat = function()
+    {
+        return cc.audioEngine._currMusic._buffer.length / (this.songInfo.bpm/60.0);
+    };
+    
+};
+
+        
+
+
