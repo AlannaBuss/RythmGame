@@ -1,6 +1,8 @@
 
 var HelloWorldLayer = cc.Layer.extend({
     sprite:null,
+    song:null,
+    debugLabel:null,
     ctor:function () {
         //////////////////////////////
         // 1. super init first
@@ -36,12 +38,14 @@ var HelloWorldLayer = cc.Layer.extend({
         // add a label shows "Hello World"
         // create and initialize a label
         var helloLabel = new cc.LabelTTF("Hello World", "Arial", 38);
+        this.debugLabel = new cc.LabelTTF("0/0", "Arial", 38);
+        this.debugLabel.y = size.height/2;
+        this.debugLabel.x = 20;
         // position the label on the center of the screen
         helloLabel.x = size.width / 2;
         helloLabel.y = 0;
         // add the label as a child to this layer
         this.addChild(helloLabel, 5);
-
         // add "HelloWorld" splash screen"
         this.sprite = new cc.Sprite(asset.HelloWorld_png);
         this.sprite.attr({
@@ -51,7 +55,8 @@ var HelloWorldLayer = cc.Layer.extend({
             rotation: 180
         });
         this.addChild(this.sprite, 0);
-
+        this.addChild(this.debugLabel);
+        
         this.sprite.runAction(
             cc.sequence(
                 cc.rotateTo(2, 0),
@@ -64,7 +69,16 @@ var HelloWorldLayer = cc.Layer.extend({
                 cc.tintTo(2.5,255,125,0)
             )
         );
+        this.song = new Song({url:asset.Oroborous_ogg, bpm:130});
+        this.song.play();
+        //1 second * (130/60 seconds/beat
+        this.schedule(this.logBeat, 1*(130.0/(60.0*8)));
+        
         return true;
+    },
+    logBeat:function()
+    {
+        console.log('8Beat');
     }
 });
 
@@ -75,4 +89,34 @@ var HelloWorldScene = cc.Scene.extend({
         this.addChild(layer);
     }
 });
+
+var Song = function(info){
+    console.log(cc.audioEngine);
+    this.songInfo = info;
+    console.log(this.songInfo);
+    cc.audioEngine.playMusic(info.url);
+    cc.audioEngine.pauseMusic();
+
+    this.songTime = function()
+    {
+        return cc.audioEngine._currMusic._context.currentTime;    
+    };
+    this.beat = function()
+    {
+        
+        return this.songTime()/(this.songInfo.bpm/60.0);
+    };
+    this.play = function()
+    {
+        return cc.audioEngine.resumeMusic();
+    };
+    this.maxBeat = function()
+    {
+        return cc.audioEngine._currMusic._buffer.length / (this.songInfo.bpm/60.0);
+    };
+    
+};
+
+        
+
 
