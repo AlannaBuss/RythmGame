@@ -86,18 +86,17 @@ var HelloWorldLayer = cc.Layer.extend({
             prevTouchId: -1,
             event: cc.EventListener.TOUCH_ALL_AT_ONCE,
             onTouchesEnded: function (touches, event) {
-                    var touch = touches[0];
-                if (this.prevTouchId != touch.getID())
-                    this.prevTouchId = touch.getID();
-                else    
+                //New added in to make it so you can check multiple clicks at the same time.   
+                for(touch in touches){
                     event.getCurrentTarget().processEvent(touches[0]);
+                  }
             }
             }, this);
         }
         return true;
     },
     
-    //Checking for left side touches
+    //Checking for touches
     processEvent: function(event) {
         //Check Left
         if(this.LeftBox.checkDidTouch(event.getLocation())){
