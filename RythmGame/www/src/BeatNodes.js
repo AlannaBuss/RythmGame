@@ -13,9 +13,13 @@ var TapNode = cc.Sprite.extend({
     {
         this._super(asset.White_png);
         this.attr({
-            x: cc.winSize.width / 4,
+            x: cc.winSize.width / 4 ,
             y: cc.winSize.height + cc.winSize.height*1/6
         });        
+        if(noteInfo.isRightSide === true)
+        {
+            this.attr({x:cc.winSize.width*3/4});
+        }
         this.downBeat = noteInfo.down;
         this.upBeat = noteInfo.up;
         if(this.upBeat - this.downBeat > 1/32.0)
