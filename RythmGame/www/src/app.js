@@ -65,7 +65,7 @@ var HelloWorldLayer = cc.Layer.extend({
         this.song = new Song({url:asset.Oroborous_ogg, bpm:130});
         this.song.play();
         //1 second * (130/60 seconds/beat
-        this.schedule(this.logBeat, 1*(130.0/(60.0*8)));
+        //this.schedule(this.logBeat, 1*(130.0/(60.0*8)));
         
         
         //Label for the left side
@@ -133,7 +133,9 @@ var Notes = cc.Sprite.extend({
         }
         return false;
     }
-});var Song = function(info){
+});
+
+var Song = function(info){
     console.log(cc.audioEngine);
     this.songInfo = info;
     console.log(this.songInfo);
