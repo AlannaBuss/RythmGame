@@ -5,7 +5,9 @@ var HelloWorldLayer = cc.Layer.extend({
     leftCheckLabel:null,
     rightCheckLabel:null,
     scoreLabel:null,
+    comboLabel:null,
     score:0,
+    combo:0,
     ctor:function () {
         //////////////////////////////
         // 1. super init first
@@ -53,8 +55,8 @@ var HelloWorldLayer = cc.Layer.extend({
         this.RightBox = new Right();
         this.addChild(this.RightBox, 0);
 
-        songLabel.moveToTop();
         
+        songLabel.moveToTop();
         
         this.song = new Song({url:asset.Oroborous_ogg, bpm:130});
         this.song.play();
@@ -73,7 +75,9 @@ var HelloWorldLayer = cc.Layer.extend({
         //Score Label
         this.scoreLabel = new ScoreLabel();
         this.addChild(this.scoreLabel, 5);
-        
+
+        this.comboLabel = new ComboLabel();
+        this.addChild(this.comboLabel, 5);        
         
         //Checks for "touches" copied from HYPERLOOP
         if (cc.sys.capabilities.hasOwnProperty('touches')) {
@@ -99,13 +103,23 @@ var HelloWorldLayer = cc.Layer.extend({
     
     //Checking for touches
     processBeginEvent: function(event) {
+        var status = 0;
         //Check Left
         if(this.LeftBox.checkDidTouch(event.getLocation())){
-            this.leftCheckLabel.processAction(3);
+            status = 3;
+            this.leftCheckLabel.processAction(status);
         //Check Right
         }else if(this.RightBox.checkDidTouch(event.getLocation())){
-            this.rightCheckLabel.processAction(3);
+            status = 3;
+            this.rightCheckLabel.processAction(status);
         }
+        //Combo stuff
+        if(status>0){
+            this.combo++;
+        }else{
+            this.combo = 0;
+        }
+        this.comboLabel.updateScore(this.combo);
     },
     
     //Checking for end touches
@@ -138,6 +152,18 @@ var ScoreLabel = cc.LabelTTF.extend({
     
     updateScore:function(score){
         this.setString("" + score);
+    }
+});
+
+var ComboLabel = cc.LabelTTF.extend({
+    ctor:function(){
+        this._super("x0", "Arial", 38);
+        this.x = cc.winSize.width / 2;
+        this.y = cc.winSize.height / 2;
+    },
+    
+    updateScore: function(combo){
+        this.setString("x" + combo);
     }
 });
 
