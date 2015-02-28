@@ -12,7 +12,7 @@ var TapNode = cc.Sprite.extend({
         this._super(asset.White_png);
         this.attr({
             x: cc.winSize.width / 4,
-            y: cc.winSize.height + cc.winSize.height+1/6
+            y: cc.winSize.height + cc.winSize.height*1/6
         });        
         this.downBeat = noteInfo.down;
         this.upBeat = noteInfo.up;
@@ -34,7 +34,7 @@ var TapNode = cc.Sprite.extend({
                this._beatTick > this.upBeat)
             {
                 
-                this.y = (cc.winSize.height/4 * this.  );
+                this.y = (cc.winSize.height  * (this.downBeat - this._beatTick) + cc.winSize.height/6);
             }
             if(this.y < -cc.winSize.height)
             {
