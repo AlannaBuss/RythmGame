@@ -6,6 +6,10 @@ var HelloWorldLayer = cc.Layer.extend({
     rightCheckLabel:null,
     scoreLabel:null,
     score:0,
+    leftScore:0,
+    rightScore:0,
+    beats:[],
+    bpm:130,
     ctor:function () {
         //////////////////////////////
         // 1. super init first
@@ -35,7 +39,7 @@ var HelloWorldLayer = cc.Layer.extend({
         menu.x = 0;
         menu.y = 0;
         this.addChild(menu, 1);
-
+        
         /////////////////////////////
         // 3. add your codes below...
         // add a label shows "Ouroboros"
@@ -59,8 +63,16 @@ var HelloWorldLayer = cc.Layer.extend({
         this.song = new Song({url:asset.Oroborous_ogg, bpm:130});
         this.song.play();
         //1 second * (130/60 seconds/beat
-        //this.schedule(this.logBeat, 1*(130.0/(60.0*8)));
+        //Load beats
+      
+        console.log(g_songs[0]);
+        var buf = g_songs[0].lBuffer;
         
+        for(var beat in buf)
+        {
+            var info = buf[beat];
+            this.beats.push(new TapNode(info,this));
+        }
         
         //Label for the left side
         this.leftCheckLabel = new LeftUpdate();
@@ -94,9 +106,31 @@ var HelloWorldLayer = cc.Layer.extend({
             }
             }, this);
         }
+        var barSprite = new cc.Sprite(asset.Bar_png);
+        barSprite.attr({x:cc.winSize/2,y:cc.winSize/6});
+        this.addChild(barSprite,-1);
+        this.scheduleUpdate();
+        
+        
         return true;
     },
     
+    update:function(dt)
+    {
+        
+        for(var aBeat in this.beats)
+        {
+            if(this.beats[aBeat].updateBeat(dt*(130/60)))
+            {
+                this.beats[aBeat].unscheduleUpdate();
+            }
+            else if(this.beats[aBeat]._addedToScene)
+            {
+                this.beats[aBeat].scheduleUpdate();
+            }
+        }
+            
+    },
     //Checking for touches
     processBeginEvent: function(event) {
         //Check Left

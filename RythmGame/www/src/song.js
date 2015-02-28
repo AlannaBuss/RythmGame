@@ -1,9 +1,11 @@
-var SongBuffer = function(file)
+var SongBuffer = function()
 {
-    this.lBuffer=null;
-    this.rBuffer=null;
-    cc.loader.loadTxt(file, function(err, txt)
+    this.lBuffer = [];
+    this.rBuffer = [];
+   
+    this.parse=function(err,txt)
     {
+        console.log(this);
         console.log(err);
         console.log(txt);
         this.lBuffer = [];
@@ -19,17 +21,22 @@ var SongBuffer = function(file)
                 console.log(token);
                 if(token[0] == 'R')
                 {
-                    this.rBuffer.push({down:token[1],up:token[2]});
+                    this.rBuffer.push({down:parseFloat(token[1]),up:parseFloat(token[2])});
                 }
                 else if(token[0]=='L')
                 {
-                    this.lBuffer.push({down:token[1],up:token[2]});
+                    this.lBuffer.push({down:parseFloat(token[1]),up:parseFloat([2])});
                 }
                 
             }
         }
-        
-        console.log('Buffers are' + JSON.stringify(this.lBuffer) + ' ' + JSON.stringify(this.rBuffer));
-    });
+        console.log(this);
+
+    };
+    this.load=function(file)
+    {
+        console.log("At load: " + JSON.stringify(this));
+        cc.loader.loadTxt(file,this.parse.bind(this));
+    };
     
 };

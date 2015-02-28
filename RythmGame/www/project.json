@@ -12,6 +12,7 @@
 
     "jsList" : [
         "src/song.js",
+        "src/BeatNodes.js",
         "src/resource.js",
         "src/app.js"
     ]

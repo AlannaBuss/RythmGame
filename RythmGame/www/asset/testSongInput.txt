@@ -1,9 +1,9 @@
 #R: Right side
 #L: Left side
 #Note data points are in eights
-R 8 8
+R 1 1
+L 4 4
+R 5 5
+L 6 6
+R 7 7
 L 8 8
-R 16 16
-L 16 16
-R 24 32
-L 24 32
