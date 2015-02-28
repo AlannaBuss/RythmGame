@@ -1,10 +1,11 @@
 
 var HelloWorldLayer = cc.Layer.extend({
-    sprite:null,
-    song:null,
-    debugLabel:null,
+    LeftBox:null,
+    RightBox: null,
     leftCheckLabel:null,
-    score:0,
+    rightCheckLabel:null,
+    leftScore:0,
+    rightScore:0,
     ctor:function () {
         //////////////////////////////
         // 1. super init first
@@ -46,9 +47,13 @@ var HelloWorldLayer = cc.Layer.extend({
         // add the label as a child to this layer
         this.addChild(songLabel, 5);
 
-        // add Notes
-        this.sprite = new Notes();
-        this.addChild(this.sprite, 0);
+        // add Left box for checking
+        this.LeftBox = new Left();
+        this.addChild(this.LeftBox, 0);
+        
+        // add right box for checking
+        this.RightBox = new Right();
+        this.addChild(this.RightBox, 0);
 
         // this.sprite.runAction(
         //    cc.sequence(
@@ -74,32 +79,56 @@ var HelloWorldLayer = cc.Layer.extend({
         this.leftCheckLabel.y = size.height / 2;
         this.addChild(this.leftCheckLabel, 5);
         
+        //Label for the right side
+        this.rightCheckLabel = new cc.LabelTTF("x0" , "Arial", 38);
+        this.rightCheckLabel.x = 3 * size.width / 4;
+        this.rightCheckLabel.y = size.height / 2;
+        this.addChild(this.rightCheckLabel, 5);
+        
         //Checks for "touches" copied from HYPERLOOP
         if (cc.sys.capabilities.hasOwnProperty('touches')) {
         cc.eventManager.addListener({
             prevTouchId: -1,
             event: cc.EventListener.TOUCH_ALL_AT_ONCE,
             onTouchesEnded: function (touches, event) {
-                    var touch = touches[0];
-                if (this.prevTouchId != touch.getID())
-                    this.prevTouchId = touch.getID();
-                else    
+                //Touch ends
+                 for(var touch in touches){
+                    event.getCurrentTarget().processEndEvent(touches[0]);
+                  }
+            },
+            onTouchesBegan:function(touches, event){
+                //New added in to make it so you can check multiple clicks at the same time.   
+                for(var touch in touches){
                     event.getCurrentTarget().processEvent(touches[0]);
+                  }
             }
             }, this);
         }
         return true;
     },
     
-    //Checking for left side touches
+    //Checking for touches
     processEvent: function(event) {
-        if(this.sprite.checkDidTouch(event.getLocation())){
-            this.score += 1;
+        //Check Left
+        if(this.LeftBox.checkDidTouch(event.getLocation())){
+            this.leftScore += 1;
+            this.leftCheckLabel.setString("x" + this.leftScore + " begin", "Arial", 38);
+        //Check Right
+        }else if(this.RightBox.checkDidTouch(event.getLocation())){
+            this.rightScore += 1;
+            this.rightCheckLabel.setString("x" + this.rightScore + " begin" , "Arial", 38);
         }
-         this.score += 1;
-        this.leftCheckLabel.setString("x" + this.score, "Arial", 38);
-    }
+    },
     
+    //Checking for end touches
+    processEndEvent: function(event) {
+        if(this.LeftBox.checkDidTouch(event.getLocation())){
+            this.leftCheckLabel.setString("x" + this.leftScore + " end", "Arial", 38);
+        }
+        else if(this.RightBox.checkDidTouch(event.getLocation())){
+            this.rightCheckLabel.setString("x" + this.rightScore + " end", "Arial", 38);
+        }
+    }
     
 });
 
@@ -111,24 +140,29 @@ var HelloWorldScene = cc.Scene.extend({
     }
 });
 
-
-var Notes = cc.Sprite.extend({
-    ctor:function(arg) {
-        this._super(asset.Circle_png);
-         this.attr({
-            x: cc.winSize.width / 4,
-            y: cc.winSize.height / 2,
-            scale: 1.5,
-            rotation: 180
-        });
-    },
+var Right = cc.Sprite.extend({
     checkDidTouch:function(touch) {
         var loc = touch;
-        var bb = cc.winSize.width / 2;
-        bb.y = cc.winSize.height;
-        console.log(bb.x + ' ' + bb.y + ' ' + bb.width + ' ' + bb.height);
-        console.log(touch.x + ' ' + touch.y);
-        if(loc.x > bb.x && loc.x < bb.x + bb.width && loc.y > bb.y && loc.y < bb.y + bb.height){
+        if(loc.x > cc.winSize.width / 2  && loc.y < cc.winSize.height / 2){
+            return true;
+        }
+        return false;
+    }
+});
+
+var Left = cc.Sprite.extend({
+//    ctor:function(arg) {
+//        this._super(asset.Circle_png);
+//         this.attr({
+//            x: cc.winSize.width / 4,
+//            y: cc.winSize.height / 2,
+//            scale: 1.5,
+//            rotation: 180
+//        });
+//    },
+    checkDidTouch:function(touch) {
+        var loc = touch;
+        if(loc.x < cc.winSize.width / 2  && loc.y < cc.winSize.height / 2){
             return true;
         }
         return false;
