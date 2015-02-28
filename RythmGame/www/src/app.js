@@ -43,13 +43,7 @@ var HelloWorldLayer = cc.Layer.extend({
         this.addChild(helloLabel, 5);
 
         // add "HelloWorld" splash screen"
-        this.sprite = new cc.Sprite(asset.HelloWorld_png);
-        this.sprite.attr({
-            x: size.width / 2,
-            y: size.height / 2,
-            scale: 0.5,
-            rotation: 180
-        });
+        this.sprite = new Notes();
         this.addChild(this.sprite, 0);
 
         this.sprite.runAction(
@@ -76,3 +70,25 @@ var HelloWorldScene = cc.Scene.extend({
     }
 });
 
+
+var Notes = cc.Sprite.extend({
+    ctor:function(arg) {
+        this._super(asset.Circle_png);
+         this.attr({
+            x: cc.winSize.width / 4,
+            y: cc.winSize.height / 2,
+            scale: 1.5,
+            rotation: 180
+        });
+    },
+    checkDidTouch:function(touch) {
+        var loc = touch;
+        var bb = this.getBoundingBoxToWorld();
+        console.log(bb.x + ' ' + bb.y + ' ' + bb.width + ' ' + bb.height);
+        console.log(touch.x + ' ' + touch.y);
+        if(loc.x > bb.x && loc.x < bb.x + bb.width && loc.y > bb.y && loc.y < bb.y + bb.height){
+            return true;
+        }
+        return false;
+    }
+});
