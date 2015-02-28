@@ -40,7 +40,7 @@ var HelloWorldLayer = cc.Layer.extend({
         // 3. add your codes below...
         // add a label shows "Ouroboros"
         // create and initialize a label
-        var songLabel = new cc.LabelTTF("Ouroboros", "Arial", 38);
+        var songLabel = new SongTitle();
         // position the label on the center of the screen
         songLabel.x = size.width / 2;
         songLabel.y = 0;
@@ -67,7 +67,7 @@ var HelloWorldLayer = cc.Layer.extend({
                 cc.tintTo(2.5,255,125,0)
             )
         );
-        
+               
         //Label for the left side
         this.leftCheckLabel = new cc.LabelTTF("x0" , "Arial", 38);
         this.leftCheckLabel.x = size.width / 4;
@@ -135,6 +135,12 @@ var HelloWorldScene = cc.Scene.extend({
     }
 });
 
+var SongTitle = cc.LabelTTF.extend({
+    ctor: function(parent, alignment) {
+        this._super("Ouroboros", "Arial", 38);
+    }
+});
+
 var Right = cc.Sprite.extend({
     checkDidTouch:function(touch) {
         var loc = touch;
@@ -146,15 +152,6 @@ var Right = cc.Sprite.extend({
 });
 
 var Left = cc.Sprite.extend({
-//    ctor:function(arg) {
-//        this._super(asset.Circle_png);
-//         this.attr({
-//            x: cc.winSize.width / 4,
-//            y: cc.winSize.height / 2,
-//            scale: 1.5,
-//            rotation: 180
-//        });
-//    },
     checkDidTouch:function(touch) {
         var loc = touch;
         if(loc.x < cc.winSize.width / 2  && loc.y < cc.winSize.height / 2){
