@@ -131,7 +131,7 @@ var HelloWorldLayer = cc.Layer.extend({
         {
             
             
-            (this.beats[aBeat].updateBeat(dt*(130/60)));
+            (this.beats[aBeat].updateBeat(this.currentBeat));
         }
             
     },
