@@ -9,6 +9,8 @@ var TapNode = cc.Sprite.extend({
     _tappedUp:false,
     _isHold:false,
     _progressNode:null,
+    _progressHolder:null,
+    _progressSprite:null,
     ctor:function(noteInfo, parentLayer)
     {
         this._super(asset.White_png);
@@ -24,15 +26,11 @@ var TapNode = cc.Sprite.extend({
         this.upBeat = noteInfo.up;
         if(this.upBeat - this.downBeat > 1/32.0)
         {
-            _isHold = true;
-            this.addChild(new cc.Sprite(asset.White_empty),-2);
-            this._progressNode = new cc.ProgressTimer();
-            this._progressNode = new cc.sprite(asset.White_full);
-            this._progressNode.type == cc.ProgressTimer.TYPE_RADIAL;
-            this.addChild(this._progressNode,-1);
-            
-            
-            
+            this._isHold = true;
+            this._progressHolder = new cc.Sprite(asset.White_empty);
+            this._progressNode = new cc.Sprite(asset.White_full);
+  
+
         }
         this._parentLayer = parentLayer;
     },
@@ -43,8 +41,21 @@ var TapNode = cc.Sprite.extend({
         {
             
             this._parentLayer.addChild(this);
-            this._addedToScene = true;
-            
+            if(this._isHold){
+                this._parentLayer.addChild(this._progressNode);
+                this._parentLayer.addChild(this._progressHolder);
+                this._progressNode.attr({
+                    x: this.x,
+                        y: cc.winSize.height + cc.winSize.height*1/6
+                });
+                 this._progressHolder.attr({
+                    x: this.x,
+                    y: cc.winSize.height + cc.winSize.height*1/6
+                });
+                this._progressNode.setScale(0,0);
+            }
+                this._addedToScene = true;
+                
         }
         if(this._addedToScene)
         {
@@ -54,15 +65,34 @@ var TapNode = cc.Sprite.extend({
                 
                 this.y = (cc.winSize.height  * (this.downBeat - this._beatTick) + cc.winSize.height/6);
             }
-            else if(this._isHold)
+            else
             {
                 var percent = (this._beatTick - this.downBeat) / (this.upBeat - this.downBeat);
-                this._progressNode.setPercentage(percent);
+                console.log(percent);
+                
+                this.y = cc.winSize.height/6;
+                if(this._isHold == true)
+                {
+                    this._progressNode.setScaleX(percent);
+                    this._progressNode.setScaleY(percent);
+                }
             }
             if(this.y < -cc.winSize.height)
             {
+                if(this._isHold)
+                {
+                    
+                    this._progressHolder.removeFromParent();
+                    this._progressNode.removeFromParent();
+                   
+                }
                 this.removeFromParent();
                 return true;
+            }
+            if(this._isHold)
+            {
+                this._progressNode.y = this.y;
+                this._progressHolder.y = this.y;
             }
         }
     
