@@ -445,5 +445,24 @@ var Song = function(info){
 };
 
         
+var Ready = cc.Sprite.extend({
+    ctor:function(arg) {
+        this._super(asset.ReadyScreen_png);
+        this.attr({
+            x : cc.winSize.width / 2,
+            y : cc.winSize.height / 2,
+            scale: 1
+        });
+    }
+});
 
-
+var Go = cc.Sprite.extend({
+    ctor:function(arg) {
+        this._super(asset.GoScreen_png);
+        this.attr({
+            x : cc.winSize.width / 2,
+            y : cc.winSize.height / 2,
+            scale: 1
+        });
+    }
+});
