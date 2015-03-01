@@ -121,10 +121,14 @@ var HelloWorldLayer = cc.Layer.extend({
                     if(this.beats[aBeat].rightSide === true)
                     {
                         this.rightCheckLabel.processAction(0);
+                        this.combo = 0;
+                        this.comboLabel.updateScore(this.combo);
                     }
                     else
                     {
                         this.leftCheckLabel.processAction(0);
+                        this.combo = 0;
+                        this.comboLabel.updateScore(this.combo);
                     }
                     
                     this.beats[aBeat].remove();
