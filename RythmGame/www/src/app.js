@@ -255,6 +255,7 @@ var ScoreLabel = cc.LabelTTF.extend({
     },
     
     morePoints: function(score){
+        console.log(score);
         if(score === 0){
             return 0;
         }else if (score == 1){
@@ -285,7 +286,6 @@ var LeftUpdate = cc.LabelTTF.extend({
         this.y = cc.winSize.height / 2;
     },
     processAction:function(number){
-        console.log(number);
         if(number !== -1)
         {
             this.x = cc.winSize.width / 4;
