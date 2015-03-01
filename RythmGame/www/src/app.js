@@ -27,24 +27,7 @@ var HelloWorldLayer = cc.Layer.extend({
         // ask the window size
         var size = cc.winSize;
 
-        // add a "close" icon to exit the progassets. it's an autorelease object
-        var closeItem = new cc.MenuItemImage(
-            asset.CloseNormal_png,
-            asset.CloseSelected_png,
-            function () {
-                cc.log("Menu is clicked!");
-            }, this);
-        closeItem.attr({
-            x: size.width - 20,
-            y: 20,
-            anchorX: 0.5,
-            anchorY: 0.5
-        });
-
-        var menu = new cc.Menu(closeItem);
-        menu.x = 0;
-        menu.y = 0;
-        this.addChild(menu, 1);
+       
         
         /////////////////////////////
         // 3. add your codes below...
@@ -256,7 +239,7 @@ var ScoreLabel = cc.LabelTTF.extend({
     
     morePoints: function(score){
         console.log(score);
-        if(score === 0){
+        if(score === 0 || score == -1){
             return 0;
         }else if (score == 1){
             return 15;
@@ -290,7 +273,7 @@ var LeftUpdate = cc.LabelTTF.extend({
         {
             this.x = cc.winSize.width / 4;
             this.y = cc.winSize.height / 2;
-            if(number === 0){
+            if(number === 0 || number == -1){
                 this.setString("Miss");
             }else if(number == 1){
                 this.setString("Good");
@@ -338,7 +321,7 @@ var RightUpdate = cc.LabelTTF.extend({
         {
             this.x = 3 * cc.winSize.width / 4;
             this.y = cc.winSize.height / 2;
-            if(number === 0){
+            if(number === 0 || number == -1){
                 this.setString("Miss");
             }else if(number == 1){
                 this.setString("Good");
