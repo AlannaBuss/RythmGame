@@ -7,15 +7,15 @@ var HelloWorldLayer = cc.Layer.extend({
     scoreLabel:null,
     comboLabel:null,
     score:0,
+<<<<<<< HEAD
     leftScore:0,
     rightScore:0,
     beats:[],
     bpm:130,
     barSprite:null,
+=======
     combo:0,
-    currentBeat:0,
-    leftStartHold:0,
-    rightStartHold:0,
+>>>>>>> origin/master
     ctor:function () {
         //////////////////////////////
         // 1. super init first
@@ -27,7 +27,24 @@ var HelloWorldLayer = cc.Layer.extend({
         // ask the window size
         var size = cc.winSize;
 
-       
+        // add a "close" icon to exit the progassets. it's an autorelease object
+        var closeItem = new cc.MenuItemImage(
+            asset.CloseNormal_png,
+            asset.CloseSelected_png,
+            function () {
+                cc.log("Menu is clicked!");
+            }, this);
+        closeItem.attr({
+            x: size.width - 20,
+            y: 20,
+            anchorX: 0.5,
+            anchorY: 0.5
+        });
+
+        var menu = new cc.Menu(closeItem);
+        menu.x = 0;
+        menu.y = 0;
+        this.addChild(menu, 1);
         
         /////////////////////////////
         // 3. add your codes below...
@@ -55,7 +72,7 @@ var HelloWorldLayer = cc.Layer.extend({
         //Load beats
       
         console.log(g_songs[0]);
-        var buf = g_songs[0].lBuffer.concat(g_songs[0].rBuffer);
+        var buf = g_songs[0].lBuffer;
         
         for(var beat in buf)
         {
@@ -108,119 +125,43 @@ var HelloWorldLayer = cc.Layer.extend({
     
     update:function(dt)
     {
-        this.currentBeat += dt*this.bpm/60.0;
         
         for(var aBeat in this.beats)
         {
             
-            if(this.beats[aBeat]._active)
-            {
-                (this.beats[aBeat].updateBeat(this.currentBeat));
-                if(this.beats[aBeat].upBeat + 1 < this.currentBeat)
-                {
-                    if(this.beats[aBeat].rightSide === true)
-                    {
-                        this.rightCheckLabel.processAction(0);
-                        this.combo = 0;
-                        this.comboLabel.updateScore(this.combo);
-                    }
-                    else
-                    {
-                        this.leftCheckLabel.processAction(0);
-                        this.combo = 0;
-                        this.comboLabel.updateScore(this.combo);
-                    }
-                    
-                    this.beats[aBeat].remove();
-                }
-                
-            }
+            
+            (this.beats[aBeat].updateBeat(dt*(130/60)))
         }
             
-    },
-    checkDownTouches:function (side)
-    {
-        var res = -1;
-        for(var aBeat in this.beats)
-        {
-            if((this.beats[aBeat].rightSide && side == 'R') || 
-               (!this.beats[aBeat].rightSide && side == 'L'))
-            res = this.beats[aBeat].tapDown(this.currentBeat);
-            if(res !== -1)
-            {
-                console.log(res);
-                return res;
-            }
-        }
-        return res;
-    },
-    checkUpTouches:function (side)
-    {
-             
-        var res = -1;
-        for(var aBeat in this.beats)
-        {
-            var isActive = this.beats[aBeat]._active;
-            var isHold = this.beats[aBeat]._isHold;
-            
-            console.log(this.beats[aBeat]._active + " " + this.beats[aBeat]._isHold + " " + (this.beats[aBeat].rightSide && side == 'R'));
-               (!this.beats[aBeat].rightSide &&  side == 'L')
-            if(this.beats[aBeat]._active && 
-              (this.beats[aBeat]._isHold &&
-               ((this.beats[aBeat].rightSide && side == 'R') || 
-               (!this.beats[aBeat].rightSide &&  side == 'L'))))
-            {
-                res = this.beats[aBeat].tapUp(this.currentBeat);
-                if(res != -1)
-                {
-                    return res;
-                }
-            }
-        }
-        return res;
     },
     //Checking for touches
     processBeginEvent: function(event) {
-
-        var status = -1;
+        var status = 0;
         //Check Left
         if(this.LeftBox.checkDidTouch(event.getLocation())){
-            status = this.checkDownTouches('L');
+            status = 3;
             this.leftCheckLabel.processAction(status);
-            this.leftStartHold = this.currentBeat;
         //Check Right
         }else if(this.RightBox.checkDidTouch(event.getLocation())){
-            status = this.checkDownTouches('R');
+            status = 3;
             this.rightCheckLabel.processAction(status);
-            this.rightStartHold = this.currentBeat;
         }
-        
         //Combo stuff
         if(status>0){
             this.combo++;
-        }else if(status != -1) {
+        }else{
             this.combo = 0;
         }
         this.comboLabel.updateScore(this.combo);
-        this.score += this.scoreLabel.morePoints(status);
     },
     
     //Checking for end touches
     processEndEvent: function(event) {
-        var status = -1;
         if(this.LeftBox.checkDidTouch(event.getLocation())){
-            status=this.checkUpTouches("L");
-            this.leftCheckLabel.processAction(status);
-            //console.log("L " + this.leftStartHold + " " + this.currentBeat);
+            this.leftCheckLabel.processAction(3);
         }
         else if(this.RightBox.checkDidTouch(event.getLocation())){
-            status = this.checkUpTouches("R");
-            this.rightCheckLabel.processAction(status);
-            //console.log("R " + this.rightStartHold + " " + this.currentBeat);
-        }
-        this.score += this.scoreLabel.morePoints(status);
-        if(status === 0){
-            this.combo = 0;
+            this.rightCheckLabel.processAction(3);
         }
         this.scoreLabel.updateScore(this.score);
     }
@@ -244,18 +185,6 @@ var ScoreLabel = cc.LabelTTF.extend({
     
     updateScore:function(score){
         this.setString("" + score);
-    },
-    
-    morePoints: function(score){
-        console.log(score);
-        if(score === 0 || score == -1){
-            return 0;
-        }else if (score == 1){
-            return 15;
-        }else{
-            return 20;
-        }
-        
     }
 });
 
@@ -278,28 +207,26 @@ var LeftUpdate = cc.LabelTTF.extend({
         this.y = cc.winSize.height / 2;
     },
     processAction:function(number){
-        if(number !== -1)
-        {
-            this.x = cc.winSize.width / 4;
-            this.y = cc.winSize.height / 2;
-            if(number === 0 || number == -1){
-                this.setString("Miss");
-            }else if(number == 1){
-                this.setString("Good");
-            }else{
-                this.setString("Perfect");
-            }
-             var colorChange = 
-                cc.spawn(
-                    cc.tintTo(0, 255, 255, 255)
-                );
-            this.runAction(colorChange);
-            this.show();
-            this.scheduleOnce(this.move, colorChange.getDuration());
+        this.x = cc.winSize.width / 4;
+        this.y = cc.winSize.height / 2;
+        if(number === 0){
+            this.setString("Miss");
+        }else if(number == 1){
+            this.setString("Good");
+        }else{
+            this.setString("Perfect");
         }
+         var colorChange = 
+            cc.spawn(
+                cc.tintTo(0, 255, 255, 255)
+            );
+        this.runAction(colorChange);
+        this.show();
+        this.scheduleOnce(this.move, colorChange.getDuration());
         
     },
     move:function(){
+       
         var movement = 
             cc.spawn(
                 cc.moveBy(0.5, cc.p(0, 40)),
@@ -326,28 +253,26 @@ var RightUpdate = cc.LabelTTF.extend({
         this.y = cc.winSize.height / 2;
     },
     processAction:function(number){
-        if(number !== -1)
-        {
-            this.x = 3 * cc.winSize.width / 4;
-            this.y = cc.winSize.height / 2;
-            if(number === 0 || number == -1){
-                this.setString("Miss");
-            }else if(number == 1){
-                this.setString("Good");
-            }else{
-                this.setString("Perfect");
-            }
-             var colorChange = 
-                cc.spawn(
-                    cc.tintTo(0, 255, 255, 255)
-                );
-            this.runAction(colorChange);
-            this.show();
-            this.scheduleOnce(this.move, colorChange.getDuration());
+        this.x = 3 * cc.winSize.width / 4;
+        this.y = cc.winSize.height / 2;
+        if(number === 0){
+            this.setString("Miss");
+        }else if(number == 1){
+            this.setString("Good");
+        }else{
+            this.setString("Perfect");
         }
+         var colorChange = 
+            cc.spawn(
+                cc.tintTo(0, 255, 255, 255)
+            );
+        this.runAction(colorChange);
+        this.show();
+        this.scheduleOnce(this.move, colorChange.getDuration());
         
     },
     move:function(){
+       
         var movement = 
             cc.spawn(
                 cc.moveBy(0.5, cc.p(0, 40)),
@@ -440,24 +365,5 @@ var Song = function(info){
 };
 
         
-var Ready = cc.Sprite.extend({
-    ctor:function(arg) {
-        this._super(asset.ReadyScreen_png);
-        this.attr({
-            x : cc.winSize.width / 2,
-            y : cc.winSize.height / 2,
-            scale: 1
-        });
-    }
-});
 
-var Go = cc.Sprite.extend({
-    ctor:function(arg) {
-        this._super(asset.GoScreen_png);
-        this.attr({
-            x : cc.winSize.width / 2,
-            y : cc.winSize.height / 2,
-            scale: 1
-        });
-    }
-});
+

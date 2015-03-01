@@ -128,22 +128,19 @@ var TapNode = cc.Sprite.extend({
     },
     tapUp:function(beat)
     {
-        console.log("FUCKIN THIS THING");
         if(this._active && !this._tappedDown)
         {
             return -1;
         }
-        var goodTiming = 1/8.0;
-        var greatTiming = 1/16.0;
+        var goodTiming = 1/4.0;
+        var greatTiming = 1/8.0;
         var score = 0;
         if(!this._tappedUp && Math.abs(this.upBeat - beat) < greatTiming)
         {
-            console.log("Yay!");
             score = 2;
         }
         else if(!this._tappedUp && Math.abs(this.upBeat - beat) < goodTiming)
         {
-            console.log("Uh");
             score = 1;
         }
         this.remove();
