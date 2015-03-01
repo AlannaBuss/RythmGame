@@ -130,22 +130,72 @@ var HelloWorldLayer = cc.Layer.extend({
         for(var aBeat in this.beats)
         {
             
-            
-            (this.beats[aBeat].updateBeat(this.currentBeat));
+            if(this.beats[aBeat]._active)
+            {
+                (this.beats[aBeat].updateBeat(this.currentBeat));
+                if(this.beats[aBeat].y < 0)
+                {
+                    if(this.beats[aBeat].isRightSide)
+                    {
+                        this.rightCheckLabel.processAction(0);
+                    }
+                    else
+                    {
+                        this.leftCheckLabel.processAction(0);
+                    }
+                    
+                    this.beats[aBeat].remove();
+                }
+            }
         }
             
     },
+    checkDownTouches:function (side)
+    {
+        var res = -1;
+        for(var aBeat in this.beats)
+        {
+            if((this.beats[aBeat].rightSide && side == 'R') || 
+               (!this.beats[aBeat].rightSide && side == 'L'))
+            res = this.beats[aBeat].tapDown(this.currentBeat);
+            if(res !== -1)
+            {
+                console.log(res);
+                return res;
+            }
+        }
+        return res;
+    },
+    checkUpTouches:function ()
+    {
+        var res = -1;
+        for(var aBeat in this.beats)
+        {
+            if((this.beats[aBeat]._isHold &&
+                this.beats[aBeat]._tappedDown)&&
+                ((this.beats[aBeat].rightSide && side == 'R') || 
+               (!this.beats[aBeat].rightSide && side == 'L')))
+            
+            res = this.beats[aBeat].tapUp();
+            if(res != -1)
+            {
+                return res;
+            }
+        }
+        return res;
+    },
     //Checking for touches
     processBeginEvent: function(event) {
-        var status = 0;
+
+        var status = -1;
         //Check Left
         if(this.LeftBox.checkDidTouch(event.getLocation())){
-            status = 3;
+            status = this.checkDownTouches('L');
             this.leftCheckLabel.processAction(status);
             this.leftStartHold = this.currentBeat;
         //Check Right
         }else if(this.RightBox.checkDidTouch(event.getLocation())){
-            status = 3;
+            status = this.checkDownTouches('R');
             this.rightCheckLabel.processAction(status);
             this.rightStartHold = this.currentBeat;
         }
@@ -153,7 +203,7 @@ var HelloWorldLayer = cc.Layer.extend({
         //Combo stuff
         if(status>0){
             this.combo++;
-        }else{
+        }else if(status != -1) {
             this.combo = 0;
         }
         this.comboLabel.updateScore(this.combo);
@@ -162,16 +212,16 @@ var HelloWorldLayer = cc.Layer.extend({
     
     //Checking for end touches
     processEndEvent: function(event) {
-        var status = 0;
+        var status = -1;
         if(this.LeftBox.checkDidTouch(event.getLocation())){
-            status = 3;
+            status=this.checkUpTouches("L");
             this.leftCheckLabel.processAction(status);
-            console.log("L " + this.leftStartHold + " " + this.currentBeat);
+            //console.log("L " + this.leftStartHold + " " + this.currentBeat);
         }
         else if(this.RightBox.checkDidTouch(event.getLocation())){
-            status = 3;
+            status = this.checkUpTouches("R");
             this.rightCheckLabel.processAction(status);
-            console.log("R " + this.rightStartHold + " " + this.currentBeat);
+            //console.log("R " + this.rightStartHold + " " + this.currentBeat);
         }
         this.score += this.scoreLabel.morePoints(status);
         if(status === 0){
@@ -232,22 +282,26 @@ var LeftUpdate = cc.LabelTTF.extend({
         this.y = cc.winSize.height / 2;
     },
     processAction:function(number){
-        this.x = cc.winSize.width / 4;
-        this.y = cc.winSize.height / 2;
-        if(number === 0){
-            this.setString("Miss");
-        }else if(number == 1){
-            this.setString("Good");
-        }else{
-            this.setString("Perfect");
+        console.log(number);
+        if(number !== -1)
+        {
+            this.x = cc.winSize.width / 4;
+            this.y = cc.winSize.height / 2;
+            if(number === 0){
+                this.setString("Miss");
+            }else if(number == 1){
+                this.setString("Good");
+            }else{
+                this.setString("Perfect");
+            }
+             var colorChange = 
+                cc.spawn(
+                    cc.tintTo(0, 255, 255, 255)
+                );
+            this.runAction(colorChange);
+            this.show();
+            this.scheduleOnce(this.move, colorChange.getDuration());
         }
-         var colorChange = 
-            cc.spawn(
-                cc.tintTo(0, 255, 255, 255)
-            );
-        this.runAction(colorChange);
-        this.show();
-        this.scheduleOnce(this.move, colorChange.getDuration());
         
     },
     move:function(){
@@ -277,22 +331,25 @@ var RightUpdate = cc.LabelTTF.extend({
         this.y = cc.winSize.height / 2;
     },
     processAction:function(number){
-        this.x = 3 * cc.winSize.width / 4;
-        this.y = cc.winSize.height / 2;
-        if(number === 0){
-            this.setString("Miss");
-        }else if(number == 1){
-            this.setString("Good");
-        }else{
-            this.setString("Perfect");
+        if(number !== -1)
+        {
+            this.x = 3 * cc.winSize.width / 4;
+            this.y = cc.winSize.height / 2;
+            if(number === 0){
+                this.setString("Miss");
+            }else if(number == 1){
+                this.setString("Good");
+            }else{
+                this.setString("Perfect");
+            }
+             var colorChange = 
+                cc.spawn(
+                    cc.tintTo(0, 255, 255, 255)
+                );
+            this.runAction(colorChange);
+            this.show();
+            this.scheduleOnce(this.move, colorChange.getDuration());
         }
-         var colorChange = 
-            cc.spawn(
-                cc.tintTo(0, 255, 255, 255)
-            );
-        this.runAction(colorChange);
-        this.show();
-        this.scheduleOnce(this.move, colorChange.getDuration());
         
     },
     move:function(){

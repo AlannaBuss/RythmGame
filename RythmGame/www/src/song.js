@@ -5,20 +5,14 @@ var SongBuffer = function()
    
     this.parse=function(err,txt)
     {
-        console.log(this);
-        console.log(err);
-        console.log(txt);
         this.lBuffer = [];
         this.rBuffer = [];
         if(txt)
         {
             var dat = txt.split("\n");
-            console.log(dat);
             for(var line in dat)
             {
-                //console.log('yee ' + dat[line]);
                 var token = dat[line].split(' ');
-                console.log(token[0]);
                 if(token[0] == 'R')
                 {
                     
@@ -31,12 +25,10 @@ var SongBuffer = function()
                 
             }
         }
-        console.log(this);
 
     };
     this.load=function(file)
     {
-        console.log("At load: " + JSON.stringify(this));
         cc.loader.loadTxt(file,this.parse.bind(this));
     };
     
