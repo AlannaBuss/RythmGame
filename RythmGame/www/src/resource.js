@@ -12,7 +12,7 @@ var asset = {
 };
 
 var songs = {
-    Oroborus_file: "asset/testSongInput.txt"
+    Oroborus_file: "asset/basicTest.txt"
 };
 
 var g_resources = [];

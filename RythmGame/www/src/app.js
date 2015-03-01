@@ -133,9 +133,10 @@ var HelloWorldLayer = cc.Layer.extend({
             if(this.beats[aBeat]._active)
             {
                 (this.beats[aBeat].updateBeat(this.currentBeat));
-                if(this.beats[aBeat].y < 0)
+                if(this.beats[aBeat].y < 0 ||
+                   this.beats[aBeat].upBeat + 1/16.0 < this.currentBeat)
                 {
-                    if(this.beats[aBeat].isRightSide)
+                    if(this.beats[aBeat].rightSide === true)
                     {
                         this.rightCheckLabel.processAction(0);
                     }
@@ -146,6 +147,7 @@ var HelloWorldLayer = cc.Layer.extend({
                     
                     this.beats[aBeat].remove();
                 }
+                
             }
         }
             
@@ -166,15 +168,16 @@ var HelloWorldLayer = cc.Layer.extend({
         }
         return res;
     },
-    checkUpTouches:function ()
+    checkUpTouches:function (side)
     {
         var res = -1;
         for(var aBeat in this.beats)
         {
-            if((this.beats[aBeat]._isHold &&
-                this.beats[aBeat]._tappedDown)&&
+            if(this.beats[aBeat]._isActive && 
+              (this.beats[aBeat]._isHold &&
+              this.beats[aBeat]._tappedDown)&&
                 ((this.beats[aBeat].rightSide && side == 'R') || 
-               (!this.beats[aBeat].rightSide && side == 'L')))
+               (!this.beats[aBeat].rightSide &&  side == 'L')))
             
             res = this.beats[aBeat].tapUp();
             if(res != -1)

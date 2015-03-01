@@ -44,7 +44,7 @@ var TapNode = cc.Sprite.extend({
         if(this._beatTick + 1 > this.downBeat && !this._addedToScene)
         {
             
-            this._parentLayer.addChild(this);
+
             if(this._isHold){
                 this._parentLayer.addChild(this._progressNode);
                 this._parentLayer.addChild(this._progressHolder);
@@ -56,7 +56,11 @@ var TapNode = cc.Sprite.extend({
                     x: this.x,
                     y: cc.winSize.height + cc.winSize.height*1/6
                 });
-                this._progressNode.setScale(0,0);
+                this._progressNode.setScale(0.1,0.1);
+            }
+            else
+            {
+                this._parentLayer.addChild(this);
             }
                 this._addedToScene = true;
                 
@@ -71,13 +75,13 @@ var TapNode = cc.Sprite.extend({
             }
             else
             {
-                var percent = (this._beatTick - this.downBeat) / (this.upBeat - this.downBeat);
+                var percent = 0.9 * (this._beatTick - this.downBeat) / (this.upBeat - this.downBeat);
                 
                 this.y = cc.winSize.height/6;
                 if(this._isHold === true)
                 {
-                    this._progressNode.setScaleX(percent);
-                    this._progressNode.setScaleY(percent);
+                    this._progressNode.setScaleX(percent + 0.1);
+                    this._progressNode.setScaleY(percent + 0.1);
                 }
             }
             if(this.y < -cc.winSize.height)
@@ -128,24 +132,41 @@ var TapNode = cc.Sprite.extend({
         {
             return -1;
         }
-        var goodTiming = 1/2.0;
-        var greatTiming = 1/4.0;
+        var goodTiming = 1/8.0;
+        var greatTiming = 1/16.0;
         var score = 0;
-        if(this._tappedDown && !this._tappedUp && Math.abs(this.upBeat - beat) < greatTiming)
+        if(!this._tappedUp && Math.abs(this.upBeat - beat) < greatTiming)
         {
       
             score = 2;
         }
-        else if(Math.abs(this.upBeat - beat) < goodTiming)
+        else if(!this._tappedUp && Math.abs(this.upBeat - beat) < goodTiming)
         {
             score = 1;
         }
+        this.remove();
         this._tappedUp = true;
         return score;   
     },
     remove:function()
     {
-        this._active = false;
+        if(this._active)
+        {
+            var fadeAction = new cc.Spawn(
+                cc.fadeTo(0.15, 0),
+                cc.scaleTo(0.15,1.5)
+            );
+            this.scheduleOnce(this._removeFromParent,0.35);
+            this.runAction(fadeAction);
+            
+            this._active = false;
+        }
+        return true;
+    },
+    _removeFromParent:function()
+    {
+        this.cleanup();
+        
         if(this._isHold)
         {
                     
@@ -154,7 +175,7 @@ var TapNode = cc.Sprite.extend({
                    
         }
         this.removeFromParent();
-        return true;
+           
     }
     
     
