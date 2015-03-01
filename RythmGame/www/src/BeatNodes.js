@@ -128,6 +128,7 @@ var TapNode = cc.Sprite.extend({
     },
     tapUp:function(beat)
     {
+        console.log("FUCKIN THIS THING");
         if(this._active && !this._tappedDown)
         {
             return -1;
@@ -137,11 +138,12 @@ var TapNode = cc.Sprite.extend({
         var score = 0;
         if(!this._tappedUp && Math.abs(this.upBeat - beat) < greatTiming)
         {
-      
+            console.log("Yay!");
             score = 2;
         }
         else if(!this._tappedUp && Math.abs(this.upBeat - beat) < goodTiming)
         {
+            console.log("Uh");
             score = 1;
         }
         this.remove();
@@ -158,7 +160,14 @@ var TapNode = cc.Sprite.extend({
             );
             this.scheduleOnce(this._removeFromParent,0.35);
             this.runAction(fadeAction);
-            
+            if(this._isHold)
+            {
+                    
+                this._progressHolder.removeFromParent();
+                this._progressNode.removeFromParent();
+                   
+            }
+       
             this._active = false;
         }
         return true;
@@ -167,13 +176,6 @@ var TapNode = cc.Sprite.extend({
     {
         this.cleanup();
         
-        if(this._isHold)
-        {
-                    
-            this._progressHolder.removeFromParent();
-            this._progressNode.removeFromParent();
-                   
-        }
         this.removeFromParent();
            
     }
