@@ -1,8 +1,5 @@
 var asset = {
     HelloWorld_png : "asset/HelloWorld.png",
-    CloseNormal_png : "asset/CloseNormal.png",
-    Circle_png : "asset/circleSprite.png",
-    CloseSelected_png : "asset/CloseSelected.png",
     White_png :"asset/White.png",
     Bar_png : "asset/bar.png",
     White_empty: "asset/WhiteEmpty.png",
