@@ -16,7 +16,7 @@
     //      5 - cc.error, cc.assert, cc.warn will print on canvas, available only on web.
     //      6 - cc.error, cc.assert will print on canvas, available only on web.
 
-    "showFPS"       : true,
+    "showFPS"       : false,
     // Left bottom corner fps information will show when "showFPS" equals true, otherwise it will be hide.
 
     "frameRate"     : 60,
