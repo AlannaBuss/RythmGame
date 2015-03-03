@@ -2,8 +2,9 @@ var StartLayer = cc.Layer.extend({
     timeTick:0,
     startButton:null,
     background:null,
-    onEnter:function()
+    ctor:function()
     {
+        this._super();
         this.background = new cc.Sprite(asset.MenuScreen_png);
         this.background.attr({x:cc.winSize.width/2, y:cc.winSize.height/2});
         this.addChild(this.background,0);
@@ -28,7 +29,7 @@ var StartLayer = cc.Layer.extend({
         }
         else
         {
-            console.log("TOuches not supported");
+            console.log("Touches not supported");
         }
         this.scheduleUpdate();
         return true;    
@@ -40,7 +41,7 @@ var StartLayer = cc.Layer.extend({
         touch = touch.getLocation();
         console.log(touch);
         var bb = this.startButton.getBoundingBoxToWorld();
-        if(bb.x > touch.x && bb.y > touch.y && bb.x + bb.width < touch.x && bb.x + bb.height < touch.y)
+        if(bb.x < touch.x && bb.y < touch.y && bb.x + bb.width > touch.x && bb.x + bb.height > touch.y)
         {
             console.log("Startin");
             this.startGame();

@@ -114,7 +114,11 @@ var SongLayer = cc.Layer.extend({
             cc.audioEngine.setMusicVolume(this.currentBeat/4);
         }
         this.currentBeat += dt*this.bpm/60.0;
-        
+        if(this.currentBeat > 390 && this.isResetting === undefined)
+        {
+            this.isResetting = true;
+            this.restartGame();
+        }
         for(var aBeat in this.beats)
         {
             
@@ -236,7 +240,7 @@ var SongLayer = cc.Layer.extend({
     restartGame:function(event)
     {
         var scene=new cc.Scene();
-        scene.addChild(new startLayer());
+        scene.addChild(new StartLayer());
         cc.director.runScene(new cc.TransitionFade(1.2,scene));    
     }
     
@@ -384,7 +388,7 @@ var RightUpdate = cc.LabelTTF.extend({
 
 var SongTitle = cc.LabelTTF.extend({
     ctor:function() {
-        this._super("Now Playing\nOuroboros\nKevin Macleod", "Arial", 38);
+        this._super("Now Playing\nOuroboros\nKevin MacLeod", "Arial", 38);
         this.x = cc.winSize.width / 2;
         this.y = 0;
     },
