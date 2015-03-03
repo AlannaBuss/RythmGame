@@ -49,8 +49,10 @@ var HelloWorldLayer = cc.Layer.extend({
         
         songLabel.moveToTop();
         
-        this.song = new Song({url:asset.Oroborous_ogg, bpm:130});
-        this.song.play();
+        this.scheduleOnce(this.startGame,3);
+       
+        
+        
         //1 second * (130/60 seconds/beat
         //Load beats
       
@@ -100,7 +102,6 @@ var HelloWorldLayer = cc.Layer.extend({
         this.barSprite = new cc.Sprite(asset.Bar_png);
         this.barSprite.attr({x:cc.winSize.width/2,  y:cc.winSize.height/6});
         this.addChild(this.barSprite);
-        this.scheduleUpdate();
         
         
         return true;
@@ -108,6 +109,10 @@ var HelloWorldLayer = cc.Layer.extend({
     
     update:function(dt)
     {
+        if(this.currentBeat/4 < 1.0)
+        {
+            cc.audioEngine.setMusicVolume(this.currentBeat/4);
+        }
         this.currentBeat += dt*this.bpm/60.0;
         
         for(var aBeat in this.beats)
@@ -137,6 +142,13 @@ var HelloWorldLayer = cc.Layer.extend({
             }
         }
             
+    },
+    startGame:function()
+    {
+        this.song = new Song({
+        url:asset.Oroborous_ogg, bpm:130});
+        this.song.play();
+        this.scheduleUpdate();
     },
     checkDownTouches:function (side)
     {
@@ -223,6 +235,12 @@ var HelloWorldLayer = cc.Layer.extend({
             this.combo = 0;
         }
         this.scoreLabel.updateScore(this.score);
+    },
+    restartGame:function(event)
+    {
+        var scene=new cc.Scene();
+        scene.addChild(new startLayer());
+        cc.director.runScene(new cc.TransitionFade(1.2,scene));    
     }
     
 });
@@ -369,7 +387,7 @@ var RightUpdate = cc.LabelTTF.extend({
 
 var SongTitle = cc.LabelTTF.extend({
     ctor:function() {
-        this._super("Ouroboros", "Arial", 38);
+        this._super("Now Playing\nOuroboros\nKevin Macleod", "Arial", 38);
         this.x = cc.winSize.width / 2;
         this.y = 0;
     },
