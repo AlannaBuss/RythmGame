@@ -12,27 +12,26 @@ var StartLayer = cc.Layer.extend({
         
         
         this.addChild(this.startButton,1);
+        
+        //Checks for touches
         if (cc.sys.capabilities.hasOwnProperty('touches')) {
             console.log("Adding touch listener");
-        cc.eventManager.addListener({
-            prevTouchId: -1,
-            event: cc.EventListener.TOUCH_ALL_AT_ONCE,
-                onTouchesEnded: function (touches, event) {
-                //Touch ends
-                console.log("Touch event");
-                 for(var touch in touches){
-                                        
-                                event.getCurrentTarget().processEvent(touches[0]);
-                  }
-                }
-            }, this);
+            cc.eventManager.addListener({
+                event: cc.EventListener.TOUCH_ALL_AT_ONCE,
+                    onTouchesEnded: function (touches, event) {
+                    console.log("Touch event");
+                     for(var touch in touches){                    
+                        event.getCurrentTarget().processEvent(touches[0]);
+                      }
+                    }
+                }, this);
         }
         else
         {
             console.log("TOuches not supported");
         }
         this.scheduleUpdate();
-            
+        return true;    
     },
         
     

@@ -5,8 +5,6 @@ var asset = {
     White_empty: "asset/WhiteEmpty.png",
     White_full: "asset/WhiteFull.png",
     Oroborous_ogg :"asset/Ouroboros.mp3",
-    ReadyScreen_png: "asset/ready.png",
-    GoScreen_png: "asset/Go.png",
     MenuScreen_png:"asset/intro.png",
     Retry_png:"asset/reset.png"
 };
