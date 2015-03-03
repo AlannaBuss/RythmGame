@@ -1,5 +1,5 @@
 
-var HelloWorldLayer = cc.Layer.extend({
+var SongLayer = cc.Layer.extend({
     LeftBox:null,
     RightBox: null,
     leftCheckLabel:null,
@@ -56,7 +56,7 @@ var HelloWorldLayer = cc.Layer.extend({
         //1 second * (130/60 seconds/beat
         //Load beats
       
-        console.log(g_songs[0]);
+  
         var buf = g_songs[0].lBuffer.concat(g_songs[0].rBuffer);
         
         for(var beat in buf)
@@ -174,9 +174,6 @@ var HelloWorldLayer = cc.Layer.extend({
         {
             var isActive = this.beats[aBeat]._active;
             var isHold = this.beats[aBeat]._isHold;
-            
-            console.log(this.beats[aBeat]._active + " " + this.beats[aBeat]._isHold + " " + (this.beats[aBeat].rightSide && side == 'R'));
-               (!this.beats[aBeat].rightSide &&  side == 'L')
             if(this.beats[aBeat]._active && 
               (this.beats[aBeat]._isHold &&
                ((this.beats[aBeat].rightSide && side == 'R') || 
@@ -248,7 +245,7 @@ var HelloWorldLayer = cc.Layer.extend({
 var HelloWorldScene = cc.Scene.extend({
     onEnter:function () {
         this._super();
-        var layer = new HelloWorldLayer();
+        var layer = new SongLayer();
         this.addChild(layer);
     }
 });
